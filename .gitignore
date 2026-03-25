@@ -106,3 +106,8 @@ build/
 
 #temporary configurations
 #env-config.js
+
+# Large assets
+**/banner-l.png
+public/assets/img/slider/banner.png
+public/assets/img/slider/modified-png.png
