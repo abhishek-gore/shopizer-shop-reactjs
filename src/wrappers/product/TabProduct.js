@@ -28,7 +28,7 @@ const TabProduct = ({
   }, []);
   const getProductList = async () => {
     setLoader(true)
-    let action = constant.ACTION.PRODUCT_GROUP + 'FEATURED_ITEM?store=' + defaultStore + '&lang=' + currentLanguageCode;
+    let action = constant.ACTION.PRODUCTS + '?store=' + defaultStore + '&lang=' + currentLanguageCode + '&count=20&page=0';
     try {
       let response = await WebService.get(action);
       // console.log(response);

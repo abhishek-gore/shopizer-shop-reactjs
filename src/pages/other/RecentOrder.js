@@ -106,7 +106,7 @@ const RecentOrder = ({
                                           <img
                                             style={{ width: 140 }}
                                             className="img-fluid"
-                                            src={orderItem.product.image.imageUrl}
+                                            src={orderItem.product.image?.imageUrl || ""}
                                             alt=""
                                           />
                                         </Link>
@@ -140,7 +140,7 @@ const RecentOrder = ({
                               <thead className="footer-table-row">
                                 <tr>
                                   <th>{strings["Ordered on"]} {order.datePurchased}</th>
-                                  <th>{strings["Order Total"]} :  US${order.totals[order.totals.length - 1].value}</th>
+                                  <th>{strings["Order Total"]} :  US${order.total || (order.totals && order.totals.length > 0 ? order.totals[order.totals.length - 1].value : "N/A")}</th>
                                 </tr>
                               </thead>
                             </table>
