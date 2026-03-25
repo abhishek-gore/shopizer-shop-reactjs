@@ -119,6 +119,9 @@ jobs:
             ~/.npm
           key: ${{ needs.install.outputs.cache-key }}
           
+      - name: Install dependencies if cache miss
+        run: npm install --legacy-peer-deps
+          
       - name: Generate version
         id: version
         run: |
