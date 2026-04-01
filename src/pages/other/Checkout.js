@@ -510,8 +510,16 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
 
     if( !cartID ) {
       history.push("/");
+      return;
     }
 
+    // Handle MONEYORDER payment (no stripe/elements)
+    if (!elements || !stripe) {
+      onPayment(data, null);
+      return;
+    }
+
+    // Handle STRIPE payment
     let card = elements.getElement(CardElement);
     // console.log(card);
     // let ownerInfo = {
@@ -542,11 +550,14 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
       param = {
         "shippingQuote": selectedOptions,
         "currency": merchant.currency,
-        "payment": {
+        "payment": result ? {
           "paymentType": "CREDITCARD",
           "transactionType": "CAPTURE",
           "paymentModule": "stripe",
-          "paymentToken": result.token,
+          "paymentToken": result,
+          "amount": shippingQuote[shippingQuote.length - 1].value
+        } : {
+          "paymentType": "MONEYORDER",
           "amount": shippingQuote[shippingQuote.length - 1].value
         }
       }
@@ -605,11 +616,14 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
       param = {
         "shippingQuote": selectedOptions,
         "currency": merchant.currency,
-        "payment": {
+        "payment": result ? {
           "paymentType": "CREDITCARD",
           "transactionType": "CAPTURE",
           "paymentModule": "stripe",
-          "paymentToken": result.token,
+          "paymentToken": result,
+          "amount": shippingQuote[shippingQuote.length - 1].value
+        } : {
+          "paymentType": "MONEYORDER",
           "amount": shippingQuote[shippingQuote.length - 1].value
         },
         "customer": customer
@@ -1233,6 +1247,27 @@ const Checkout = ({shipStateData, isLoading, currentLanguageCode, merchant, stri
                           </Elements>
                         </div>
                       }
+                      {
+                        window._env_.APP_PAYMENT_TYPE === 'MONEYORDER' &&
+                        <div className="payment-method mt-25">
+                          <div className="place-order mt-100">
+                            <div className="login-toggle-btn mb-20">
+                              <input type="checkbox" name={paymentForm.isAgree.name} ref={register(paymentForm.isAgree.validate)} onChange={onAgreement}/>
+                              <label className="ml-10 ">{strings["I agree with the terms and conditions"]}</label>
+                              {errors[paymentForm.isAgree.name] && <p className="error-msg">{errors[paymentForm.isAgree.name].message}</p>}
+                            </div>
+                            <div>
+                              {
+                                  watch('isAgree') && 
+                                  <div className="agreement-info-wrap" dangerouslySetInnerHTML={{ __html: agreementData.replace(/>]]/g, "&gt;") }}>
+                                  </div>
+                              }
+                            </div>
+                            <button type="button" onClick={handleSubmit((d) => onSubmitOrder(d, null, null))} className="btn-hover">{strings["Place your order"]}</button>
+                          </div>
+                        </div>
+                      }
+
                       {
                         window._env_.APP_PAYMENT_TYPE === 'NUVEI' &&
                         <iframe title="Payment Page" height={"1150"} width="570" srcDoc='<form action="https://testpayments.nuvei.com/merchant/paymentpage" method="post">

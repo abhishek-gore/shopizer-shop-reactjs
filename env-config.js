@@ -7,7 +7,13 @@ window._env_ = {
   APP_MAP_API_KEY: "",
   APP_NUVEI_TERMINAL_ID: "",
   APP_NUVEI_SECRET: "",
-  APP_PAYMENT_TYPE: "STRIPE",
+  APP_PAYMENT_TYPE: "MONEYORDER",
   APP_STRIPE_KEY: "",
   APP_THEME_COLOR: "#D1D1D1",
+}
+
+
+// Define process.env for compatibility
+if (typeof window !== 'undefined' && !window.process) {
+  window.process = { env: { PUBLIC_URL: "" } };
 }
