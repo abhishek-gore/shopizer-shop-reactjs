@@ -120,6 +120,9 @@ jobs:
           key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: node-modules-${{ runner.os }}-
           
+      - name: Install dependencies if cache miss
+        run: npm install --legacy-peer-deps
+          
       - name: Generate version
         id: version
         run: |
