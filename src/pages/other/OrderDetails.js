@@ -112,7 +112,7 @@ const OrderDetails = ({
                                                             <tr key={key} className="customTrRow">
                                                                 <td className="product-thumbnail">
                                                                     <Link onClick={() => onClickItem(orderItem.product)} to={"/product/" + orderItem.product.description.friendlyUrl}>
-                                                                        <img className="img-fluid" src={orderItem.product.image.imageUrl} alt="" />
+                                                                        <img className="img-fluid" src={orderItem.product.image?.imageUrl || ""} alt="" />
                                                                     </Link>
                                                                 </td>
 
@@ -164,16 +164,16 @@ const OrderDetails = ({
                                                 <span><b>{strings["Order Status"]}</b>{" "}</span><span style={{ marginLeft: 60 }}>{orderDetails.orderStatus}</span>
                                             </div>
                                             <div style={{ marginBottom: 20 }}>
-                                                <span><b >{strings["Billing Address"]}</b>{" "}</span><span style={{ marginLeft: 44 }}>{orderDetails.billing.address},  {orderDetails.billing.city} {orderDetails.billing.zone} {orderDetails.billing.country}, {orderDetails.billing.postalCode}</span>
+                                                <span><b >{strings["Billing Address"]}</b>{" "}</span><span style={{ marginLeft: 44 }}>{orderDetails.billing?.address},  {orderDetails.billing?.city} {orderDetails.billing?.zone} {orderDetails.billing?.country}, {orderDetails.billing?.postalCode}</span>
                                             </div>
-                                            {orderDetails.shipping !== null &&
+                                            {orderDetails.delivery &&
                                                 <div style={{ marginBottom: 20 }}>
-                                                    <span><b >{strings["Delivery Address"]}</b>{" "}</span> <span style={{ marginLeft: 30 }}>{orderDetails.delivery.address},  {orderDetails.delivery.city} {orderDetails.delivery.zone} {orderDetails.delivery.country}, {orderDetails.delivery.postalCode}</span>
+                                                    <span><b >{strings["Delivery Address"]}</b>{" "}</span> <span style={{ marginLeft: 30 }}>{orderDetails.delivery?.address},  {orderDetails.delivery?.city} {orderDetails.delivery?.zone} {orderDetails.delivery?.country}, {orderDetails.delivery?.postalCode}</span>
                                                 </div>
                                             }
                                         </div>
                                         <div className="col-5 order-details-total">
-                                            {
+                                            {orderDetails.totals && orderDetails.totals.length > 0 ? (
                                                 orderDetails.totals.map((value, i) => {
                                                     return (
                                                         <h4 key={i} className="amount_type">
@@ -184,8 +184,14 @@ const OrderDetails = ({
                                                         </h4>
                                                     )
                                                 })
-
-                                            }
+                                            ) : (
+                                                <h4 className="amount_type">
+                                                    <span className="amount_module">Total</span>
+                                                    <span className="amount">
+                                                        {orderDetails.total}
+                                                    </span>
+                                                </h4>
+                                            )}
 
                                         </div>
                                     </div>

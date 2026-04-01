@@ -7,6 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
   <meta name="description" content="Imports from the world" />
+  <script>
+    // Critical: Define process before any other scripts load
+    window.process = window.process || {};
+    window.process.env = window.process.env || {};
+    window.process.env.PUBLIC_URL = window.process.env.PUBLIC_URL || "";
+    window.process.env.NODE_ENV = window.process.env.NODE_ENV || "production";
+  </script>
   <script src="%PUBLIC_URL%/env-config.js"></script>
   <!--
       manifest.json provides metadata used when your web app is installed on a
