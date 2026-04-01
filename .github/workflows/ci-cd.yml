@@ -12,8 +12,6 @@ env:
 jobs:
   install:
     runs-on: ubuntu-latest
-    outputs:
-      cache-key: ${{ steps.cache-keys.outputs.node-modules }}
     steps:
       - uses: actions/checkout@v4
       
@@ -22,10 +20,6 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           
-      - name: Generate cache keys
-        id: cache-keys
-        run: echo "node-modules=node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}" >> $GITHUB_OUTPUT
-          
       - name: Cache node_modules
         id: cache-deps
         uses: actions/cache@v4
@@ -33,7 +27,7 @@ jobs:
           path: |
             node_modules
             ~/.npm
-          key: ${{ steps.cache-keys.outputs.node-modules }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: node-modules-${{ runner.os }}-
             
       - name: Install dependencies
@@ -55,7 +49,8 @@ jobs:
           path: |
             node_modules
             ~/.npm
-          key: ${{ needs.install.outputs.cache-key }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: node-modules-${{ runner.os }}-
           
       - name: Run ESLint
         run: npm run lint || echo "Lint check completed"
@@ -75,7 +70,8 @@ jobs:
           path: |
             node_modules
             ~/.npm
-          key: ${{ needs.install.outputs.cache-key }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: node-modules-${{ runner.os }}-
           
       - name: Install dependencies if cache miss
         run: npm install --legacy-peer-deps
@@ -97,7 +93,8 @@ jobs:
           path: |
             node_modules
             ~/.npm
-          key: ${{ needs.install.outputs.cache-key }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: node-modules-${{ runner.os }}-
       
       - name: Run npm audit
         run: npm audit --audit-level=high || true
@@ -120,7 +117,8 @@ jobs:
           path: |
             node_modules
             ~/.npm
-          key: ${{ needs.install.outputs.cache-key }}
+          key: node-modules-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: node-modules-${{ runner.os }}-
           
       - name: Generate version
         id: version
