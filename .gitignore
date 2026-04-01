@@ -80,6 +80,9 @@ typings/
 .nuxt
 dist
 
+# Build directory
+build/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js
@@ -103,3 +106,8 @@ dist
 
 #temporary configurations
 #env-config.js
+
+# Large assets
+**/banner-l.png
+public/assets/img/slider/banner.png
+public/assets/img/slider/modified-png.png
