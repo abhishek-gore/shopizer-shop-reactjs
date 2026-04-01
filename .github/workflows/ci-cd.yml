@@ -144,6 +144,42 @@ jobs:
           path: build/
           retention-days: 30
 
+  push-to-infra:
+    name: Push Artifacts to Infra Repo
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout infra repo
+        uses: actions/checkout@v4
+        with:
+          repository: abhishek-gore/shopizer-infra
+          token: ${{ secrets.INFRA_REPO_TOKEN }}
+          path: infra
+
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ needs.build.outputs.version }}
+          path: build
+
+      - name: Setup Git LFS
+        run: git lfs install
+
+      - name: Copy artifacts
+        run: |
+          rm -rf infra/artifacts/shop/build
+          cp -r build infra/artifacts/shop/
+
+      - name: Commit and push
+        working-directory: infra
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add artifacts/shop/build
+          git commit -m "Update shop artifact from build ${{ github.run_number }}" || echo "No changes"
+          git push
+
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main'
